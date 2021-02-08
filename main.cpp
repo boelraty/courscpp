@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple2
+/*!	\brief	Exemple3
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
@@ -7,6 +7,7 @@
 #include <itkImage.h>
 #include <itkImageRegionConstIterator.h>
 #include <itkImageRegionIterator.h>
+#include <itkImageFileWriter.h>
 
 /*---- QT Includes ----*/
 #include <qdebug.h>
@@ -52,6 +53,7 @@ int main(int p_argc, char* p_argv[])
 
 	//Allocate the image in memory
 	image->Allocate();
+	image->FillBuffer(0);
 
 
 	//START EXERCICE 2
@@ -59,13 +61,13 @@ int main(int p_argc, char* p_argv[])
 	//Create const iterator for the iteration on the entire image
 	itk::ImageRegionConstIterator<UCharImageType> globalIterator(image, image->GetLargestPossibleRegion());
 
-	//Initialize iterator to beginning
+	// Initialize iterator to beginning
 	globalIterator.GoToBegin();
 
 	//Iterate over the entire image to count the number of pixels
 	int nbPixels = 0;
 
-        while (! globalIterator.IsAtEnd())
+	while (! globalIterator.IsAtEnd())
 	{
 		//To print the pixel value
 		//qDebug() << globalIterator.Get();
@@ -95,7 +97,7 @@ int main(int p_argc, char* p_argv[])
 	regionForIteration.SetIndex(startingPixel);
 	regionForIteration.SetSize(regionSize);
 
-	//Create non const iterator to fill the image with the rectangle
+	//Create non const iterator for fill the image with the square
 	itk::ImageRegionIterator<UCharImageType> localIterator(image, regionForIteration);
 	localIterator.GoToBegin();
 
@@ -126,6 +128,23 @@ int main(int p_argc, char* p_argv[])
 
 	qDebug() << "Pixel(60, 150) =" << image->GetPixel(pixelIndex1);
 	qDebug() << "Pixel(200, 150) =" << image->GetPixel(pixelIndex2);
+
+	//In order to catch possible error
+	try
+	{
+		//Create the filter to write the image
+		itk::ImageFileWriter<UCharImageType>::Pointer writer = itk::ImageFileWriter<UCharImageType>::New();
+        writer->SetFileName("toto.png");
+		writer->SetInput(image);
+		writer->Write();
+		//writer->Update();
+		qDebug() << "Writing done";
+	}
+	catch(itk::ExceptionObject & ex)
+	{
+		std::cout << ex.what();
+	}
+
 
 	return 0;
 } 
