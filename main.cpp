@@ -1,10 +1,12 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple1
+/*!	\brief	Exemple2
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
 /*---- ITK Includes ----*/
 #include <itkImage.h>
+#include <itkImageRegionConstIterator.h>
+#include <itkImageRegionIterator.h>
 
 /*---- QT Includes ----*/
 #include <qdebug.h>
@@ -18,6 +20,11 @@ int main(int p_argc, char* p_argv[])
 	//Create image
 	UCharImageType::Pointer image = UCharImageType::New();
 
+	//Define starting point (0, 0)
+	UCharImageType::IndexType startIndex;
+	startIndex[0] = 0;
+	startIndex[1] = 0;
+
 	//Define image size
 	UCharImageType::SizeType size;
 	size[0] = 512;
@@ -25,6 +32,7 @@ int main(int p_argc, char* p_argv[])
 
 	//Define image region
 	UCharImageType::RegionType region;
+	region.SetIndex(startIndex);
 	region.SetSize(size);
 
 	//Set the region to the image
@@ -45,13 +53,79 @@ int main(int p_argc, char* p_argv[])
 	//Allocate the image in memory
 	image->Allocate();
 
-	//Check image
-	qDebug() << "Dimension X:" << image->GetLargestPossibleRegion().GetSize()[0];
-	qDebug() << "Dimension Y:" << image->GetLargestPossibleRegion().GetSize()[1];
-	qDebug() << "Spacing X:" << image->GetSpacing()[0];
-	qDebug() << "Spacing Y:" << image->GetSpacing()[1];
-	qDebug() << "Origin X:" << image->GetOrigin()[0];
-	qDebug() << "Origin Y:" << image->GetOrigin()[1];
+
+	//START EXERCICE 2
+
+	//Create const iterator for the iteration on the entire image
+	itk::ImageRegionConstIterator<UCharImageType> globalIterator(image, image->GetLargestPossibleRegion());
+
+	//Initialize iterator to beginning
+	globalIterator.GoToBegin();
+
+	//Iterate over the entire image to count the number of pixels
+	int nbPixels = 0;
+
+        while (! globalIterator.IsAtEnd())
+	{
+		//To print the pixel value
+		//qDebug() << globalIterator.Get();
+
+		//Increment number of pixels
+		++nbPixels;
+
+		//Increment iterator
+		++globalIterator;
+	}
+
+	qDebug() << "Number of pixels (512, 512) =" << nbPixels;
+
+	//Create a region for iterate over a part of the image
+	UCharImageType::RegionType regionForIteration;
+
+	//Define starting pixel for iteration
+	UCharImageType::IndexType startingPixel;
+	startingPixel[0] = 50;
+	startingPixel[1] = 100;
+
+	//Define size of region for iteration
+	UCharImageType::SizeType regionSize;
+	regionSize[0] = 100;
+	regionSize[1] = 200;
+
+	regionForIteration.SetIndex(startingPixel);
+	regionForIteration.SetSize(regionSize);
+
+	//Create non const iterator to fill the image with the rectangle
+	itk::ImageRegionIterator<UCharImageType> localIterator(image, regionForIteration);
+	localIterator.GoToBegin();
+
+	nbPixels = 0;
+
+	while(!localIterator.IsAtEnd())
+	{
+		//Set a value to the pixel
+		localIterator.Set(static_cast<unsigned char>(255));
+
+		//Increment number of set pixels
+		++nbPixels;
+
+		//Increment iterator
+		++localIterator;
+	}
+
+	qDebug() << "Number of pixels set:" << nbPixels;
+
+	//Access to a specific pixel
+	UCharImageType::IndexType pixelIndex1;
+	pixelIndex1[0] = 60;
+	pixelIndex1[1] = 150;
+
+	UCharImageType::IndexType pixelIndex2;
+	pixelIndex2[0] = 200;
+	pixelIndex2[1] = 150;
+
+	qDebug() << "Pixel(60, 150) =" << image->GetPixel(pixelIndex1);
+	qDebug() << "Pixel(200, 150) =" << image->GetPixel(pixelIndex2);
 
 	return 0;
 } 
