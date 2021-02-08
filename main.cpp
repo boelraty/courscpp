@@ -1,29 +1,46 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Test App
+/*!	\brief	Exemple1
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
 /*---- ITK Includes ----*/
-#include <itkImage.h>
+
 
 /*---- QT Includes ----*/
 #include <qdebug.h>
 
-/*---- VTK Includes ----*/
-#include <vtkPolyData.h>
-#include <vtkSmartPointer.h>
 
 int main(int p_argc, char* p_argv[])
 {
-	qDebug() << "Starting test ...";
-	
-	itk::Image<unsigned char, 2>::Pointer image = itk::Image<unsigned char, 2>::New();
-	qDebug() << "ITK OK";
+	//Typedef to define a image type
+	typedef itk::Image<unsigned char, 2> UCharImageType;
 
-	vtkSmartPointer<vtkPolyData> mesh = vtkSmartPointer<vtkPolyData>::New();
-	qDebug() << "VTK OK";
+	//Create image
 
-	qDebug() << "QT OK";
 
+	//Define starting point (0, 0)
+        UCharImageType::IndexType startIndex;
+
+	//Define image size
+        UCharImageType::SizeType size;
+
+        //Define image region
+
+	//Set the region to the image
+	image->SetRegions(region);
+
+	//Set image origin (where it starts in a 2D/3D referentiel)
+	UCharImageType::PointType origin;
+
+
+	//Set image spacing
+	UCharImageType::SpacingType spacing;
+
+
+	//Allocate the image in memory
+
+	//Check image
+        qDebug() << "Dimension X:" << image->GetLargestPossibleRegion().GetSize()[0];
+        //....
 	return 0;
 } 
