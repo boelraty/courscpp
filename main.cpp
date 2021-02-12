@@ -1,11 +1,13 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple1
+/*!	\brief	Exemple3
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
 /*---- VTK Includes ----*/
-#include <vtkSphereSource.h>
+#include <vtkRenderer.h>
+#include <vtkRenderWindow.h>
 #include <vtkSmartPointer.h>
+#include <vtkSphereSource.h>
 
 /*---- QT Includes ----*/
 #include <qdebug.h>
@@ -17,16 +19,24 @@ int main(int p_argc, char* p_argv[])
 	vtkSmartPointer<vtkSphereSource> sphereObject = vtkSmartPointer<vtkSphereSource>::New();
 	sphereObject->SetCenter(20, 30, 40);
 	sphereObject->SetRadius(50);
-	sphereObject->SetPhiResolution(10);
-	sphereObject->SetThetaResolution(10);
+	sphereObject->SetPhiResolution(100);
+	sphereObject->SetThetaResolution(100);
 	sphereObject->Update();
 
-	// Get bounds of resulting polydata
-	double * bounds = new double[6];
-	sphereObject->GetOutput()->GetBounds(bounds);
-	qDebug() << "Bounds:" << bounds[0] << ";" << bounds[1] << ";" << bounds[2] << ";" << bounds[3] << ";" << bounds[4] << ";" << bounds[5];
 
-	delete [] bounds;
+	// Create renderer
+	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
+
+	// Set background (R[0-1], G[0,1], B[0,1])
+	renderer->SetBackground(1, 1, 1);
+
+	// Create render window
+	vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
+	// Associate the renderer to the window
+	renderWindow->AddRenderer(renderer);
+
+	// Start rendering
+	renderWindow->Render();
 
 	return 0;
-} 
+}
