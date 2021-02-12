@@ -1,9 +1,10 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple5
+/*!	\brief	Exemple6
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
 /*---- ITK Includes ----*/
+#include <itkBinaryThresholdImageFilter.h>
 #include <itkImage.h>
 #include <itkImageFileReader.h>
 #include <itkImageFileWriter.h>
@@ -20,48 +21,36 @@ int main(int p_argc, char* p_argv[])
 {
 	try
 	{
-		//Typedef to define a image type (refer to exercice 1 and replace unsigned char with signed short)
-		typedef itk::Image<short, 2> ShortImageType;
+		//Typedef to define a image type
+		typedef itk::Image<signed short, 2> ShortImageType;
+		typedef itk::Image<unsigned char, 2> UCharImageType;
+
 
 		//Create the GDCM image IO
 		itk::GDCMImageIO::Pointer gdcmImageIO = itk::GDCMImageIO::New();
 
 		//Create the reader to read an image
 		itk::ImageFileReader<ShortImageType>::Pointer reader = itk::ImageFileReader<ShortImageType>::New();
-		reader->SetFileName("D:/Owncloud/CoursISEN/Data/ImageDICOM");
+		reader->SetFileName("D:/Owncloud/CoursISEN/Data");
 		reader->SetImageIO(gdcmImageIO);
 		reader->Update();
 
-		//Write dimensions and spacing
-		qDebug() << "Dimensions X :" << reader->GetOutput()->GetLargestPossibleRegion().GetSize()[0];
-		qDebug() << "Dimensions Y :" << reader->GetOutput()->GetLargestPossibleRegion().GetSize()[1];
-		qDebug() << "Spacing X :" << reader->GetOutput()->GetSpacing()[0];
-		qDebug() << "Spacing Y :" << reader->GetOutput()->GetSpacing()[1];
+		//Create filter to apply threshold on image
+		itk::BinaryThresholdImageFilter<ShortImageType, UCharImageType>::Pointer thresholder =
+			itk::BinaryThresholdImageFilter<ShortImageType, UCharImageType>::New();
+		//Use reader->GetOutput() as input of thresholder
+                        
 
-		//Check information from the GDCM ImageIO
-		std::string patientName, dob, studyDate, modality;
 
-		//Get DICOM data
-		gdcmImageIO->GetValueFromTag(std::string("0010|0010"), patientName);
-		gdcmImageIO->GetValueFromTag(std::string("0010|0030"), dob);
-		gdcmImageIO->GetValueFromTag(std::string("0010|0010"), patientName);
-		gdcmImageIO->GetValueFromTag(std::string("0008|0020"), studyDate);
-		gdcmImageIO->GetValueFromTag(std::string("0008|0060"), modality);
-
-		qDebug() << "Patient name :" << patientName.c_str();
-		qDebug() << "Patient birthdate :" << dob.c_str();
-		qDebug() << "Patient birthdate :" << studyDate.c_str();
-		qDebug() << "Modality :" << modality.c_str();
-
-		itk::ImageFileWriter<ShortImageType>::Pointer writer = itk::ImageFileWriter<ShortImageType>::New();
-		writer->SetInput(reader->GetOutput());
-		writer->SetFileName("D:/image.tiff");
-		writer->Write();
-
+		//Write the binary image
+        itk::ImageFileWriter<UCharImageType>::Pointer writer = itk::ImageFileWriter<UCharImageType>::New();
+		//Refer to ex 3 and use output of thresholder
+		
+		
 	}
-	catch (itk::ExceptionObject& ex)
+	catch(itk::ExceptionObject & ex)
 	{
-		qDebug() << ex.what();
+		std::cout << ex.what();
 	}
 	return 0;
 } 
