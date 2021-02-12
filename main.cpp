@@ -26,37 +26,52 @@ int main(int p_argc, char* p_argv[])
 
 	//Create the reader to read an image
 	itk::ImageFileReader<UCharImageType>::Pointer reader = itk::ImageFileReader<UCharImageType>::New();
-	reader->SetFileName("/home/vsimoes/binaryimage.png");
+	reader->SetFileName("D:/image_seuillee.png");
 	reader->Update();
 
 	//Typedef to define a StructuringElement type
 	typedef itk::BinaryBallStructuringElement <unsigned char, 2> StructuringElementType;
 
-    //Create structuring element
 	StructuringElementType structuringElement;
 	structuringElement.SetRadius( 1 );
 	structuringElement.CreateStructuringElement();
 
 	//Typedef to define a DilateFilter type
-	typedef itk::BinaryDilateImageFilter <	UCharImageType, UCharImageType, StructuringElementType> DilateFilterType;
+	typedef itk::BinaryDilateImageFilter <	UCharImageType,
+											UCharImageType,
+											StructuringElementType> DilateFilterType;
 
 	//Typedef to define a ErodeFilter type
-	typedef itk::BinaryErodeImageFilter <	UCharImageType, UCharImageType, StructuringElementType> ErodeFilterType;
+	typedef itk::BinaryErodeImageFilter <	UCharImageType,
+											UCharImageType,
+											StructuringElementType> ErodeFilterType;
 
-	//Erode image
 	ErodeFilterType::Pointer eroder = ErodeFilterType::New();
+	eroder->SetKernel(structuringElement);
+	eroder->SetInput(reader->GetOutput());
+	eroder->SetErodeValue( 255 );
+	eroder->Update();
 
-	//Dilate image
-	DilateFilterType::Pointer eroder = DilateFilterType::New();
-
+	DilateFilterType::Pointer dilater = DilateFilterType::New();
+	dilater->SetKernel( structuringElement );
+	dilater->SetInput( eroder->GetOutput() );
+	dilater->SetDilateValue( 255 );
+	dilater->Update();
 
 	//Typedef to define a FillFilter Type
 	typedef itk::GrayscaleFillholeImageFilter < UCharImageType, UCharImageType > FillFilterType;
 
-	//Fill holes in image
+	FillFilterType::Pointer filler = FillFilterType::New();
+	filler->SetInput(dilater->GetOutput());
+	filler->Update();
 
 
 	//Write the binary image
+	itk::ImageFileWriter<UCharImageType>::Pointer writer = itk::ImageFileWriter<UCharImageType>::New();
+	writer->SetFileName("D:/resultImage3.png");
+	writer->SetInput(filler->GetOutput());
+	writer->Update();
+
 
 	return 0;
 } 
