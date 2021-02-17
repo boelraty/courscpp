@@ -5,6 +5,7 @@
 
 /*---- VTK Includes ----*/
 #include <vtkActor.h>
+#include <vtkCutter.h>
 #include <vtkPlane.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -33,42 +34,51 @@ int main(int p_argc, char* p_argv[])
 	vtkSmartPointer<vtkActor> actorScapula = vtkSmartPointer<vtkActor>::New();
 	actorScapula->SetMapper(mapperScapula);
 	actorScapula->GetProperty()->SetColor(0.87, 0.83, 0.69);
-	
+
 	//Define cut plane
-	vtkSmartPointer<vtkPlane> plane = //...
+	vtkSmartPointer<vtkPlane> plane = vtkSmartPointer<vtkPlane>::New();
+	plane->SetOrigin(0, 0, 0);
+	plane->SetNormal(0, 0, 1);
 
 	//Cut the scapula
-	vtkSmartPointer<vtkCutter> cutter = //...
+	vtkSmartPointer<vtkCutter> cutter = vtkSmartPointer<vtkCutter>::New();
+	cutter->SetInputData(reader1->GetOutput());
+	cutter->SetCutFunction(plane);
+	cutter->Update();
 
 	// Create mapper for the cut
-	vtkSmartPointer<vtkPolyDataMapper> mapperCut = //...
+	vtkSmartPointer<vtkPolyDataMapper> mapperCut = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapperCut->SetInputData(cutter->GetOutput());
 
 	// Create actor related to previous mapper
-	vtkSmartPointer<vtkActor> actorCut = //...
+	vtkSmartPointer<vtkActor> actorCut = vtkSmartPointer<vtkActor>::New();
+	actorCut->SetMapper(mapperCut);
+	actorCut->GetProperty()->SetColor(1, 0, 0);
 
     //Define cut plane
-	vtkSmartPointer<vtkPlane> plane2 = //...
+	//vtkSmartPointer<vtkPlane> plane2 = //...
 
 	//Cut the scapula
-	vtkSmartPointer<vtkCutter> cutter2 = //...
+	//vtkSmartPointer<vtkCutter> cutter2 = //...
 
 	// Create mapper for the cut
-	vtkSmartPointer<vtkPolyDataMapper> mapperCut2 = //...
+	//vtkSmartPointer<vtkPolyDataMapper> mapperCut2 = //...
 
 	// Create actor related to previous mapper
-	vtkSmartPointer<vtkActor> actorCut2 = //...
+	//vtkSmartPointer<vtkActor> actorCut2 = //...
 
 	//Define cut plane
-	vtkSmartPointer<vtkPlane> plane3 = //...
+	//vtkSmartPointer<vtkPlane> plane3 = //...
 
 	//Cut the scapula
-	vtkSmartPointer<vtkCutter> cutter3 = //...
+	//vtkSmartPointer<vtkCutter> cutter3 = //...
 
 	// Create mapper for the cut
-	vtkSmartPointer<vtkPolyDataMapper> mapperCut3 = //...
+	//vtkSmartPointer<vtkPolyDataMapper> mapperCut3 = //...
 
 	// Create actor related to previous mapper
-	vtkSmartPointer<vtkActor> actorCut3 = //...
+	//vtkSmartPointer<vtkActor> actorCut3 = //...
+
 
 	// Read STL file
 	vtkSmartPointer<vtkSTLReader> readerHumerus = vtkSmartPointer<vtkSTLReader>::New();
@@ -83,8 +93,6 @@ int main(int p_argc, char* p_argv[])
 	vtkSmartPointer<vtkActor> actorHumerus = vtkSmartPointer<vtkActor>::New();
 	actorHumerus->SetMapper(mapperHumerus);
 	actorHumerus->GetProperty()->SetColor(0.87, 0.83, 0.69);
-
-
 
 	// Create renderer
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -102,13 +110,17 @@ int main(int p_argc, char* p_argv[])
 	interactorWindow->SetRenderWindow(renderWindow);
 
 	// Add actor to renderer
-
+	//renderer->AddActor(actorScapula);
+	renderer->AddActor(actorCut);
 	renderer->AddActor(actorHumerus);
+	renderer->AddActor(actorCut2);
+	renderer->AddActor(actorCut3);
 
 	// Start rendering
 	renderWindow->Render();
 
 	// Start interactor
 	interactorWindow->Start();
+
 	return 0;
 }
