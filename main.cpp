@@ -23,8 +23,11 @@
 int main(int p_argc, char* p_argv[])
 {
 	// Create a cube
-	vtkSmartPointer<vtkCubeSource> cubeObject = vtkSmartPointer<vtkCubeSource>::New
-	//Set center, XLength, YLength, ZLength
+	vtkSmartPointer<vtkCubeSource> cubeObject = vtkSmartPointer<vtkCubeSource>::New();
+	cubeObject->SetCenter(0, 0, 0);
+	cubeObject->SetXLength(50);
+	cubeObject->SetYLength(100);
+	cubeObject->SetZLength(200);
 	cubeObject->Update();
 
 	// Create mapper for the cube
@@ -38,10 +41,13 @@ int main(int p_argc, char* p_argv[])
 
 	// Create actor to display the axis
 	vtkSmartPointer<vtkAxesActor> axesActor = vtkSmartPointer<vtkAxesActor>::New();
-	//Set size with SetTotalLength method
-	//Set axis label if needed
+	axesActor->SetTotalLength(100, 100, 100);
+	//axesActor->AxisLabelsOff();
 
-	//Create vtkTextActor - SetInput to set the text
+    vtkSmartPointer<vtkTextActor> textActor = vtkSmartPointer<vtkTextActor>::New();
+    textActor->SetInput("ISEN");
+	textActor->GetTextProperty()->SetColor(1, 0, 1);
+	textActor->GetTextProperty()->SetFontSize(30);
 
 	// Create renderer
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -60,7 +66,9 @@ int main(int p_argc, char* p_argv[])
 
 	// Add actor to renderer
 	renderer->AddActor(actor);
-	// Add axesActor and textActor to renderer
+	// Add axesActor to renderer
+	renderer->AddActor(axesActor);
+	renderer->AddActor(textActor);
 
 	// Start rendering
 	renderWindow->Render();
