@@ -1,11 +1,11 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple10
+/*!	\brief	Exemple11
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
 /*---- VTK Includes ----*/
 #include <vtkActor.h>
-#include <vtkCutter.h>
+#include <vtkClipPolyData.h>
 #include <vtkPlane.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -21,7 +21,7 @@
 
 int main(int p_argc, char* p_argv[])
 {
-	// Read STL file
+    // Read STL file
 	vtkSmartPointer<vtkSTLReader> readerScapula = vtkSmartPointer<vtkSTLReader>::New();
 	readerScapula->SetFileName("D:/Owncloud/CoursISEN/Data/scapula.stl");
 	readerScapula->Update();
@@ -35,54 +35,30 @@ int main(int p_argc, char* p_argv[])
 	actorScapula->SetMapper(mapperScapula);
 	actorScapula->GetProperty()->SetColor(0.87, 0.83, 0.69);
 
-	//Define cut plane
+	//Define Clip plane
 	vtkSmartPointer<vtkPlane> plane = vtkSmartPointer<vtkPlane>::New();
-	plane->SetOrigin(0, 0, 0);
 	plane->SetNormal(0, 0, 1);
 
-	//Cut the scapula
-	vtkSmartPointer<vtkCutter> cutter = vtkSmartPointer<vtkCutter>::New();
-	cutter->SetInputData(readerScapula->GetOutput());
-	cutter->SetCutFunction(plane);
-	cutter->Update();
+	//Clip the scapula
+	vtkSmartPointer<vtkClipPolyData> clipper = vtkSmartPointer<vtkClipPolyData>::New();
+	clipper->SetInputData(readerScapula->GetOutput());
+	clipper->SetClipFunction(plane);
+	clipper->GenerateClippedOutputOn();
+	clipper->Update();
 
-	// Create mapper for the cut
-	vtkSmartPointer<vtkPolyDataMapper> mapperCut = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapperCut->SetInputData(cutter->GetOutput());
-
-	// Create actor related to previous mapper
-	vtkSmartPointer<vtkActor> actorCut = vtkSmartPointer<vtkActor>::New();
-	actorCut->SetMapper(mapperCut);
-	actorCut->GetProperty()->SetColor(1, 0, 0);
-
-    //Define cut plane
-	//vtkSmartPointer<vtkPlane> plane2 = //...
-
-	//Cut the scapula
-	//vtkSmartPointer<vtkCutter> cutter2 = //...
-
-	// Create mapper for the cut
-	//vtkSmartPointer<vtkPolyDataMapper> mapperCut2 = //...
+	// Create mapper for the Clip
+	vtkSmartPointer<vtkPolyDataMapper> mapperClip = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapperClip->SetInputData(clipper->GetClippedOutput());
 
 	// Create actor related to previous mapper
-	//vtkSmartPointer<vtkActor> actorCut2 = //...
-
-	//Define cut plane
-	//vtkSmartPointer<vtkPlane> plane3 = //...
-
-	//Cut the scapula
-	//vtkSmartPointer<vtkCutter> cutter3 = //...
-
-	// Create mapper for the cut
-	//vtkSmartPointer<vtkPolyDataMapper> mapperCut3 = //...
-
-	// Create actor related to previous mapper
-	//vtkSmartPointer<vtkActor> actorCut3 = //...
-
-
+	vtkSmartPointer<vtkActor> actorClip = vtkSmartPointer<vtkActor>::New();
+	actorClip->SetMapper(mapperClip);
+	actorClip->GetProperty()->SetColor(0.87, 0.83, 0.69);
+	
+	
 	// Read STL file
 	vtkSmartPointer<vtkSTLReader> readerHumerus = vtkSmartPointer<vtkSTLReader>::New();
-	readerHumerus->SetFileName("/home/vsimoes/Documents/Formations/Donnees/CoursISEN/Data/humerus.stl");
+	readerHumerus->SetFileName("D:/Owncloud/CoursISEN/Data/humerus.stl");
 	readerHumerus->Update();
 
 	// Create mapper for the humerus
@@ -111,10 +87,9 @@ int main(int p_argc, char* p_argv[])
 
 	// Add actor to renderer
 	//renderer->AddActor(actorScapula);
-	renderer->AddActor(actorCut);
 	renderer->AddActor(actorHumerus);
-	//renderer->AddActor(actorCut2);
-	//renderer->AddActor(actorCut3);
+	//Add ActorClip
+	renderer->AddActor(actorClip);
 
 	// Start rendering
 	renderWindow->Render();
