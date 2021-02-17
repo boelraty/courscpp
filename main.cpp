@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple4
+/*!	\brief	Exemple5
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
@@ -18,53 +18,52 @@
 
 int main(int p_argc, char* p_argv[])
 {
-	try
-	{
-		// Create a sphere
-		vtkSmartPointer<vtkSphereSource> sphereObject = vtkSmartPointer<vtkSphereSource>::New();
-		sphereObject->SetCenter(20, 30, 40);
-		sphereObject->SetRadius(50);
-		sphereObject->SetPhiResolution(100);
-		sphereObject->SetThetaResolution(100);
-		sphereObject->Update();
 
-		// Create mapper for the sphere
-		vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-		mapper->SetInputData(sphereObject->GetOutput());
+	vtkSmartPointer<vtkSphereSource> sphereObject = vtkSmartPointer<vtkSphereSource>::New();
+	sphereObject->SetCenter(20, 30, 40);
+	sphereObject->SetRadius(50);
+	sphereObject->SetPhiResolution(100);
+	sphereObject->SetThetaResolution(100);
+	sphereObject->Update();
 
-		// Create actore related to previous mapper
-		vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-		actor->SetMapper(mapper);
+	// Create mapper for the sphere
+	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputData(sphereObject->GetOutput());
 
-		// Create renderer
-		vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
+	// Create actore related to previous mapper
+	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+	actor->SetMapper(mapper);
 
-		// Set background color
-		renderer->SetBackground(1, 1, 1);
+	// Create renderer
+	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
 
-		// Create render window
-		vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
-		// Associate the renderer to the window
-		renderWindow->AddRenderer(renderer);
+	// Set background color
+	renderer->SetBackground(0.5, 0, 1);
 
-		// Create window interactor
-		vtkSmartPointer<vtkRenderWindowInteractor> interactorWindow = vtkSmartPointer<vtkRenderWindowInteractor>::New();
-		interactorWindow->SetRenderWindow(renderWindow);
+	// Create render window
+	vtkSmartPointer<vtkRenderWindow> renderWindow = vtkSmartPointer<vtkRenderWindow>::New();
+	// Associate the renderer to the window
+	renderWindow->AddRenderer(renderer);
 
-		// Add actor to renderer
-		renderer->AddActor(actor);
+	// Create window interactor
+	vtkSmartPointer<vtkRenderWindowInteractor> interactorWindow = vtkSmartPointer<vtkRenderWindowInteractor>::New();
+	interactorWindow->SetRenderWindow(renderWindow);
 
-		// Start rendering
-		renderWindow->Render();
+	// Add actor to renderer
+	renderer->AddActor(actor);
 
-		// Start interactor
-		interactorWindow->Start();
-	}
-	catch (std::exception& ex)
-	{
-		std::cout << ex.what();
-	}
+	// Get active camera and modify camera - Method GetActiveCamera
+
+	// Add a light in the scene
+	//vtkSmartPointer<vtkLight> light = 
+	//Set Position and Intensity
+	//Add light to renderer
+
+	// Start rendering
+	renderWindow->Render();
+
+	// Start interactor
+	interactorWindow->Start();
 
 	return 0;
 }
-
