@@ -42,7 +42,7 @@ int main(int p_argc, char* p_argv[])
 
 	//Cut the scapula
 	vtkSmartPointer<vtkCutter> cutter = vtkSmartPointer<vtkCutter>::New();
-	cutter->SetInputData(reader1->GetOutput());
+	cutter->SetInputData(readerScapula->GetOutput());
 	cutter->SetCutFunction(plane);
 	cutter->Update();
 
