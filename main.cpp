@@ -19,23 +19,35 @@
 
 int main(int p_argc, char* p_argv[])
 {
-    // Read SCAPULA STL file
-    //vtkSmartPointer<vtkSTLReader> reader1 = //...
+	// Read STL file
+	vtkSmartPointer<vtkSTLReader> readerScapula = vtkSmartPointer<vtkSTLReader>::New();
+	readerScapula->SetFileName("D:/Owncloud/CoursISEN/Data/scapula.stl");
+	readerScapula->Update();
 
 	// Create mapper for the scapula
-    //vtkSmartPointer<vtkPolyDataMapper> mapper1 = //...
+	vtkSmartPointer<vtkPolyDataMapper> mapperScapula = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapperScapula->SetInputData(readerScapula->GetOutput());
 
 	// Create actor related to previous mapper
-    //vtkSmartPointer<vtkActor> actor1 = //...
+	vtkSmartPointer<vtkActor> actorScapula = vtkSmartPointer<vtkActor>::New();
+	actorScapula->SetMapper(mapperScapula);
+	actorScapula->GetProperty()->SetColor(0.87, 0.83, 0.69);
 
-    // Read HUMERUS STL file
+	// Read STL file
+	vtkSmartPointer<vtkSTLReader> readerHumerus = vtkSmartPointer<vtkSTLReader>::New();
+	readerHumerus->SetFileName("D:/Owncloud/CoursISEN/Data/humerus.stl");
+	readerHumerus->Update();
 
-
-    // Create mapper for the humerus
+	// Create mapper for the humerus
+	vtkSmartPointer<vtkPolyDataMapper> mapperHumerus = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapperHumerus->SetInputData(readerHumerus->GetOutput());
 
 	// Create actor related to previous mapper
+	vtkSmartPointer<vtkActor> actorHumerus = vtkSmartPointer<vtkActor>::New();
+	actorHumerus->SetMapper(mapperHumerus);
+	actorHumerus->GetProperty()->SetColor(0.87, 0.83, 0.69);
 
-	//Create renderer
+	// Create renderer
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
 
 	// Set background color
@@ -50,8 +62,9 @@ int main(int p_argc, char* p_argv[])
 	vtkSmartPointer<vtkRenderWindowInteractor> interactorWindow = vtkSmartPointer<vtkRenderWindowInteractor>::New();
 	interactorWindow->SetRenderWindow(renderWindow);
 
-	// Add actors to renderer
-
+	// Add actor to renderer
+	renderer->AddActor(actorScapula);
+	renderer->AddActor(actorHumerus);
 
 	// Start rendering
 	renderWindow->Render();
