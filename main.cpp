@@ -1,18 +1,16 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple5
+/*!	\brief	Exemple6
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
 /*---- VTK Includes ----*/
 #include <vtkActor.h>
-#include <vtkCamera.h>
-#include <vtkLight.h>
 #include <vtkPolyDataMapper.h>
+#include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
-#include <vtkCubeSource.h>
 #include <vtkSphereSource.h>
 
 /*---- QT Includes ----*/
@@ -21,7 +19,7 @@
 
 int main(int p_argc, char* p_argv[])
 {
-
+	// Create a sphere
 	vtkSmartPointer<vtkSphereSource> sphereObject = vtkSmartPointer<vtkSphereSource>::New();
 	sphereObject->SetCenter(20, 30, 40);
 	sphereObject->SetRadius(50);
@@ -36,6 +34,8 @@ int main(int p_argc, char* p_argv[])
 	// Create actore related to previous mapper
 	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
 	actor->SetMapper(mapper);
+	actor->GetProperty()->SetColor(1, 1, 0);
+	actor->GetProperty()->SetOpacity(0.6);
 
 	// Create renderer
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -54,17 +54,6 @@ int main(int p_argc, char* p_argv[])
 
 	// Add actor to renderer
 	renderer->AddActor(actor);
-
-	// Get active camera and modify camera
-	vtkCamera * camera = renderer->GetActiveCamera();
-	camera->SetPosition(400, 400, 400);
-
-	// Add a light in the scene
-	vtkSmartPointer<vtkLight> light = vtkSmartPointer<vtkLight>::New();
-	light->SetPosition(100, 0, 0);
-	light->SetIntensity(1);
-	renderer->AddLight(light);
-
 
 	// Start rendering
 	renderWindow->Render();
