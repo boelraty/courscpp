@@ -1,19 +1,18 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple11
+/*!	\brief	Exemple12
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
 /*---- VTK Includes ----*/
 #include <vtkActor.h>
-#include <vtkClipPolyData.h>
-#include <vtkPlane.h>
+#include <vtkPointData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
-#include <vtkSTLReader.h>
 #include <vtkSmartPointer.h>
+#include <vtkUnsignedCharArray.h>
 
 /*---- QT Includes ----*/
 #include <qdebug.h>
@@ -21,54 +20,43 @@
 
 int main(int p_argc, char* p_argv[])
 {
-    // Read STL file
-	vtkSmartPointer<vtkSTLReader> readerScapula = vtkSmartPointer<vtkSTLReader>::New();
-	readerScapula->SetFileName("D:/Owncloud/CoursISEN/Data/scapula.stl");
-	readerScapula->Update();
+	// Create vtkImageData
+	vtkSmartPointer<vtkImageData> data = //...
 
-	// Create mapper for the scapula
-	vtkSmartPointer<vtkPolyDataMapper> mapperScapula = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapperScapula->SetInputData(readerScapula->GetOutput());
+	// Fill the image data
+	vtkSmartPointer<vtkUnsignedCharArray> scalars = //...
 
-	// Create actor related to previous mapper
-	vtkSmartPointer<vtkActor> actorScapula = vtkSmartPointer<vtkActor>::New();
-	actorScapula->SetMapper(mapperScapula);
-	actorScapula->GetProperty()->SetColor(0.87, 0.83, 0.69);
+	for (int i = 0 ; i < 100 ; ++i)
+	{
+		for(int j = 0 ; j < 100 ; ++j)
+		{
+			for(int k = 0 ; k < 100 ; ++k)
+			{
+				//Fill scalars
+				if (k > 40 && k < 60 && j > 30 && j < 70 && i > 20 && i < 80)
+					scalars->SetValue(k + j * 100 + i * 100 * 100, 1);
+				else scalars->SetValue(k + j * 100 + i * 100 * 100, 0);
+			}
+		}
+	}
+	data->GetPointData()->SetScalars(scalars);
 
-	//Define Clip plane
-	vtkSmartPointer<vtkPlane> plane = vtkSmartPointer<vtkPlane>::New();
-	plane->SetNormal(0, 0, 1);
+	//Create mesh related to image data
+	vtkSmartPointer<vtkMarchingCubes> marchingcubes = //...
 
-	//Clip the scapula
-	vtkSmartPointer<vtkClipPolyData> clipper = vtkSmartPointer<vtkClipPolyData>::New();
-	clipper->SetInputData(readerScapula->GetOutput());
-	clipper->SetClipFunction(plane);
-	clipper->GenerateClippedOutputOn();
-	clipper->Update();
-
-	// Create mapper for the Clip
-	vtkSmartPointer<vtkPolyDataMapper> mapperClip = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapperClip->SetInputData(clipper->GetClippedOutput());
-
-	// Create actor related to previous mapper
-	vtkSmartPointer<vtkActor> actorClip = vtkSmartPointer<vtkActor>::New();
-	actorClip->SetMapper(mapperClip);
-	actorClip->GetProperty()->SetColor(0.87, 0.83, 0.69);
+	qDebug() << "Before decimater:" << marchingcubes->GetOutput()->GetNumberOfPoints();
 	
-	
-	// Read STL file
-	vtkSmartPointer<vtkSTLReader> readerHumerus = vtkSmartPointer<vtkSTLReader>::New();
-	readerHumerus->SetFileName("D:/Owncloud/CoursISEN/Data/humerus.stl");
-	readerHumerus->Update();
+	vtkSmartPointer<vtkDecimatePro> decimater = //...
 
-	// Create mapper for the humerus
-	vtkSmartPointer<vtkPolyDataMapper> mapperHumerus = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapperHumerus->SetInputData(readerHumerus->GetOutput());
+	qDebug() << "After decimater: " << decimater->GetOutput()->GetNumberOfPoints();
+
+	// Create mapper for the sphere
+	vtkSmartPointer<vtkPolyDataMapper> mapper = //...
 
 	// Create actor related to previous mapper
-	vtkSmartPointer<vtkActor> actorHumerus = vtkSmartPointer<vtkActor>::New();
-	actorHumerus->SetMapper(mapperHumerus);
-	actorHumerus->GetProperty()->SetColor(0.87, 0.83, 0.69);
+	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+	actor->SetMapper(mapper);
+	actor->GetProperty()->SetColor(0.87, 0.83, 0.69);
 
 	// Create renderer
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -86,10 +74,7 @@ int main(int p_argc, char* p_argv[])
 	interactorWindow->SetRenderWindow(renderWindow);
 
 	// Add actor to renderer
-	//renderer->AddActor(actorScapula);
-	renderer->AddActor(actorHumerus);
-	//Add ActorClip
-	renderer->AddActor(actorClip);
+	renderer->AddActor(actor);
 
 	// Start rendering
 	renderWindow->Render();
