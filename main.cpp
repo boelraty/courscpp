@@ -1,17 +1,20 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple6
+/*!	\brief	Exemple7
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
 /*---- VTK Includes ----*/
 #include <vtkActor.h>
+#include <vtkAxesActor.h>
+#include <vtkTextActor.h>
+#include <vtkTextProperty.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
-#include <vtkSphereSource.h>
+#include <vtkCubeSource.h>
 
 /*---- QT Includes ----*/
 #include <qdebug.h>
@@ -19,23 +22,26 @@
 
 int main(int p_argc, char* p_argv[])
 {
-	// Create a sphere
-	vtkSmartPointer<vtkSphereSource> sphereObject = vtkSmartPointer<vtkSphereSource>::New();
-	sphereObject->SetCenter(20, 30, 40);
-	sphereObject->SetRadius(50);
-	sphereObject->SetPhiResolution(100);
-	sphereObject->SetThetaResolution(100);
-	sphereObject->Update();
+	// Create a cube
+	vtkSmartPointer<vtkCubeSource> cubeObject = vtkSmartPointer<vtkCubeSource>::New
+	//Set center, XLength, YLength, ZLength
+	cubeObject->Update();
 
-	// Create mapper for the sphere
+	// Create mapper for the cube
 	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputData(sphereObject->GetOutput());
+	mapper->SetInputData(cubeObject->GetOutput());
 
-	// Create actore related to previous mapper
+	// Create actor related to previous mapper
 	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
 	actor->SetMapper(mapper);
-	actor->GetProperty()->SetColor(1, 1, 0);
-	actor->GetProperty()->SetOpacity(0.6);
+	actor->GetProperty()->SetOpacity(0.4);
+
+	// Create actor to display the axis
+	vtkSmartPointer<vtkAxesActor> axesActor = vtkSmartPointer<vtkAxesActor>::New();
+	//Set size with SetTotalLength method
+	//Set axis label if needed
+
+	//Create vtkTextActor - SetInput to set the text
 
 	// Create renderer
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -54,6 +60,7 @@ int main(int p_argc, char* p_argv[])
 
 	// Add actor to renderer
 	renderer->AddActor(actor);
+	// Add axesActor and textActor to renderer
 
 	// Start rendering
 	renderWindow->Render();
