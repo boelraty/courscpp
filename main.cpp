@@ -1,20 +1,20 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple7
+/*!	\brief	Exemple8
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
 /*---- VTK Includes ----*/
 #include <vtkActor.h>
 #include <vtkAxesActor.h>
-#include <vtkTextActor.h>
-#include <vtkTextProperty.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
+#include <vtkSTLWriter.h>
 #include <vtkSmartPointer.h>
 #include <vtkCubeSource.h>
+#include <vtkSphereSource.h>
 
 /*---- QT Includes ----*/
 #include <qdebug.h>
@@ -30,7 +30,21 @@ int main(int p_argc, char* p_argv[])
 	cubeObject->SetZLength(200);
 	cubeObject->Update();
 
-	// Create mapper for the cube
+	// Create a sphere
+	vtkSmartPointer<vtkSphereSource> sphereObject = vtkSmartPointer<vtkSphereSource>::New();
+	sphereObject->SetCenter(20, 30, 40);
+	sphereObject->SetRadius(50);
+	sphereObject->SetPhiResolution(10);
+	sphereObject->SetThetaResolution(50);
+	sphereObject->Update();
+
+	//Save
+	vtkSmartPointer<vtkSTLWriter> writer = vtkSmartPointer<vtkSTLWriter>::New();
+	writer->SetInputData(sphereObject->GetOutput());
+	writer->SetFileName("/home/vsimoes/fichier.stl");
+	writer->Update();
+
+	// Create mapper for the sphere
 	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
 	mapper->SetInputData(cubeObject->GetOutput());
 
@@ -42,12 +56,7 @@ int main(int p_argc, char* p_argv[])
 	// Create actor to display the axis
 	vtkSmartPointer<vtkAxesActor> axesActor = vtkSmartPointer<vtkAxesActor>::New();
 	axesActor->SetTotalLength(100, 100, 100);
-	//axesActor->AxisLabelsOff();
-
-    vtkSmartPointer<vtkTextActor> textActor = vtkSmartPointer<vtkTextActor>::New();
-    textActor->SetInput("ISEN");
-	textActor->GetTextProperty()->SetColor(1, 0, 1);
-	textActor->GetTextProperty()->SetFontSize(30);
+	axesActor->AxisLabelsOff();
 
 	// Create renderer
 	vtkSmartPointer<vtkRenderer> renderer = vtkSmartPointer<vtkRenderer>::New();
@@ -68,7 +77,6 @@ int main(int p_argc, char* p_argv[])
 	renderer->AddActor(actor);
 	// Add axesActor to renderer
 	renderer->AddActor(axesActor);
-	renderer->AddActor(textActor);
 
 	// Start rendering
 	renderWindow->Render();
