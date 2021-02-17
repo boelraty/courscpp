@@ -5,6 +5,9 @@
 
 /*---- VTK Includes ----*/
 #include <vtkActor.h>
+#include <vtkDecimatePro.h>
+#include <vtkImageData.h>
+#include <vtkMarchingCubes.h>
 #include <vtkPointData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkProperty.h>
@@ -21,10 +24,15 @@
 int main(int p_argc, char* p_argv[])
 {
 	// Create vtkImageData
-	vtkSmartPointer<vtkImageData> data = //...
+	vtkSmartPointer<vtkImageData> data = vtkSmartPointer<vtkImageData>::New();
+	data->SetOrigin(0, 0, 0);
+	data->SetDimensions(100, 100, 100);
+	data->SetExtent(0, 99, 0, 99, 0, 99);
+	data->SetSpacing(0.5, 0.5, 0.5);
 
 	// Fill the image data
-	vtkSmartPointer<vtkUnsignedCharArray> scalars = //...
+	vtkSmartPointer<vtkUnsignedCharArray> scalars = vtkSmartPointer<vtkUnsignedCharArray>::New();
+	scalars->SetNumberOfValues(100*100*100);
 
 	for (int i = 0 ; i < 100 ; ++i)
 	{
@@ -32,7 +40,6 @@ int main(int p_argc, char* p_argv[])
 		{
 			for(int k = 0 ; k < 100 ; ++k)
 			{
-				//Fill scalars
 				if (k > 40 && k < 60 && j > 30 && j < 70 && i > 20 && i < 80)
 					scalars->SetValue(k + j * 100 + i * 100 * 100, 1);
 				else scalars->SetValue(k + j * 100 + i * 100 * 100, 0);
@@ -42,16 +49,23 @@ int main(int p_argc, char* p_argv[])
 	data->GetPointData()->SetScalars(scalars);
 
 	//Create mesh related to image data
-	vtkSmartPointer<vtkMarchingCubes> marchingcubes = //...
+	vtkSmartPointer<vtkMarchingCubes> marchingcubes = vtkSmartPointer<vtkMarchingCubes>::New();
+	marchingcubes->SetInputData(data);
+	marchingcubes->SetValue(0, 1);
+	marchingcubes->Update();
 
 	qDebug() << "Before decimater:" << marchingcubes->GetOutput()->GetNumberOfPoints();
 	
-	vtkSmartPointer<vtkDecimatePro> decimater = //...
+	vtkSmartPointer<vtkDecimatePro> decimater = vtkSmartPointer<vtkDecimatePro>::New();
+	decimater->SetInputData(marchingcubes->GetOutput());
+	decimater->SetTargetReduction(0.95);
+	decimater->Update();
 
 	qDebug() << "After decimater: " << decimater->GetOutput()->GetNumberOfPoints();
 
 	// Create mapper for the sphere
-	vtkSmartPointer<vtkPolyDataMapper> mapper = //...
+	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputData(decimater->GetOutput());
 
 	// Create actor related to previous mapper
 	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
