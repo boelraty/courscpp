@@ -10,15 +10,15 @@
 #include <QDebug>
 #include <QApplication>
 
-
 int main(int p_argc, char* p_argv[])
 {
 	//Create the QApplication to manage the GUI
 	QApplication app(p_argc, p_argv);
 
-	//Create our own widget and call show()
-	Widget myWidget;
-	myWidget.show();
+	//Create our own widget
+	Widget mywidget;
+	mywidget.show();
+
 	//Start application / start the events loop
 	//The GUI is not displayed if the exec() method is not called
 	app.exec();

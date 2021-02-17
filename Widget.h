@@ -1,9 +1,10 @@
-#pragma once
+#ifndef Widget_H
+#define Widget_H
 
 /*---- QT Includes ----*/
-#include <QWidget>
 #include <QPushButton>
 #include <QSlider>
+#include <QWidget>
 
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -24,22 +25,31 @@ class Widget : public QWidget
 		Widget(QWidget * p_parent = NULL);
 
 		//-------------------------------------------------------------------------------------------------------------------
-		/*!	\brief	DestructoR
+		/*!	\brief	Destructor	
 		*///-----------------------------------------------------------------------------------------------------------------
 		~Widget();
 
 	private slots :
+		//-------------------------------------------------------------------------------------------------------------------
+		/*!	\brief	Slot to be connected with the click on the button
+		*///-----------------------------------------------------------------------------------------------------------------
+		void slotButtonClicked();
 
+		//-------------------------------------------------------------------------------------------------------------------
+		/*!	\brief	Slot to be connected with the slider
+		*///-----------------------------------------------------------------------------------------------------------------
+		void slotSliderMoved(int p_newValue);
 
 	//Signals could be declared here
 	//signals :
 
 	private:
-		QPushButton* m_button;
-		QSlider* m_slider;
+		QPushButton * m_button;
+		QSlider * m_slider;
 
 		Widget( const Widget & );					//! Purposely not implemented
 		Widget & operator=(const Widget & );		//! Purposely not implemented
 		
 };
 
+#endif // Widget_H
