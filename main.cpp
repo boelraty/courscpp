@@ -23,7 +23,7 @@ int main(int p_argc, char* p_argv[])
 {
 	// Read STL file
 	vtkSmartPointer<vtkSTLReader> readerScapula = vtkSmartPointer<vtkSTLReader>::New();
-	readerScapula->SetFileName("/home/vsimoes/Documents/Formations/Donnees/CoursISEN/Data/scapula.stl");
+	readerScapula->SetFileName("D:/Owncloud/CoursISEN/Data/scapula.stl");
 	readerScapula->Update();
 
 	// Create mapper for the scapula
@@ -113,8 +113,8 @@ int main(int p_argc, char* p_argv[])
 	//renderer->AddActor(actorScapula);
 	renderer->AddActor(actorCut);
 	renderer->AddActor(actorHumerus);
-	renderer->AddActor(actorCut2);
-	renderer->AddActor(actorCut3);
+	//renderer->AddActor(actorCut2);
+	//renderer->AddActor(actorCut3);
 
 	// Start rendering
 	renderWindow->Render();
