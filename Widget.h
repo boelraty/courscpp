@@ -1,7 +1,9 @@
 #pragma once
 
 /*---- QT Includes ----*/
-
+#include <QWidget>
+#include <QPushButton>
+#include <QSlider>
 
 
 //-------------------------------------------------------------------------------------------------------------------
@@ -33,7 +35,8 @@ class Widget : public QWidget
 	//signals :
 
 	private:
-
+		QPushButton* m_button;
+		QSlider* m_slider;
 
 		Widget( const Widget & );					//! Purposely not implemented
 		Widget & operator=(const Widget & );		//! Purposely not implemented
