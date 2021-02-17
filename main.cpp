@@ -5,11 +5,14 @@
 
 /*---- VTK Includes ----*/
 #include <vtkActor.h>
+#include <vtkCamera.h>
+#include <vtkLight.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkRenderer.h>
 #include <vtkRenderWindow.h>
 #include <vtkRenderWindowInteractor.h>
 #include <vtkSmartPointer.h>
+#include <vtkCubeSource.h>
 #include <vtkSphereSource.h>
 
 /*---- QT Includes ----*/
@@ -52,12 +55,16 @@ int main(int p_argc, char* p_argv[])
 	// Add actor to renderer
 	renderer->AddActor(actor);
 
-	// Get active camera and modify camera - Method GetActiveCamera
+	// Get active camera and modify camera
+	vtkCamera * camera = renderer->GetActiveCamera();
+	camera->SetPosition(400, 400, 400);
 
 	// Add a light in the scene
-	//vtkSmartPointer<vtkLight> light = 
-	//Set Position and Intensity
-	//Add light to renderer
+	vtkSmartPointer<vtkLight> light = vtkSmartPointer<vtkLight>::New();
+	light->SetPosition(100, 0, 0);
+	light->SetIntensity(1);
+	renderer->AddLight(light);
+
 
 	// Start rendering
 	renderWindow->Render();
