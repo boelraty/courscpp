@@ -1,5 +1,5 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple2
+/*!	\brief	Exemple3
 *	\file	main.cpp
 *///-----------------------------------------------------------------------------------------------------------------
 
@@ -7,6 +7,7 @@
 #include <QDebug>
 #include <QApplication>
 #include <QPushButton>
+#include <QWidget>
 
 
 int main(int p_argc, char* p_argv[])
@@ -14,27 +15,21 @@ int main(int p_argc, char* p_argv[])
 	//Create the QApplication to manage the GUI
 	QApplication app(p_argc, p_argv);
 
-	//Create a button
-	QPushButton button("First button");
+	//Create main widget
+	QWidget mainWidget;
+	mainWidget.setFixedSize(500, 500);
 
-
-	//Set a new text to the button
-	button.setText("New text for button");
+	//Create a button and give the containing widget as a pointer
+	QPushButton button("First button", &mainWidget);
 
 	//Set new width and height
-	button.setFixedWidth(400);
-	button.setFixedHeight(200);
+	button.setFixedSize(100, 50);
 
-	//Set a tool tip text
-	button.setToolTip("This is a button");
+	// Move the button inside the main widget
+	button.move(200, 200);
 
-	//Set a new font to the text
-	button.setFont(QFont("Courier", 20, QFont::Bold));
-
-	// ...
-
-	//Show the button
-	button.show();
+	//Show the main widget
+	mainWidget.show();
 
 	//Start application / start the events loop
 	//The GUI is not displayed if the exec() method is not called
