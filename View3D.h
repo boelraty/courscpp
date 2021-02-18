@@ -1,53 +1,43 @@
 #pragma once
 
 
-/*---- QT Includes ----*/
-#include <QGridLayout>
-#include <QLCDNumber>
-#include <QPushButton>
-#include <QSlider>
-#include <QWidget>
-
-#include "ui_Widget.h"
-
-//Forward declaration
-class View2D;
-class View3D;
+/*---- VTK Includes ----*/
+#include <QVTKWidget.h>
+#include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
 
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\class	Widget
-*	\brief	Widget used for the glenoid fitting validation
+/*!	\class	View3D
+*	\brief	View3D
 *
 *	\note	Copy constructor and assignment operator are purposely not implemented.
 *	
-*	\file	Widget.h
+*	\file	View3D.h
 *///-----------------------------------------------------------------------------------------------------------------
-class Widget : public QWidget
+class View3D : public QVTKWidget
 {
 	Q_OBJECT
 	public:
 		//-------------------------------------------------------------------------------------------------------------------
 		/*!	\brief	Constructor	
 		*///-----------------------------------------------------------------------------------------------------------------
-		Widget(QWidget * p_parent = NULL);
+		View3D(QWidget * p_parent = NULL);
 
 		//-------------------------------------------------------------------------------------------------------------------
-		/*!	\brief	Virtual destructor	
+		/*!	\brief	Destructor	
 		*///-----------------------------------------------------------------------------------------------------------------
-		~Widget();
+		~View3D();
+
+		//-------------------------------------------------------------------------------------------------------------------
+		/*!	\brief	Init data
+		*///-----------------------------------------------------------------------------------------------------------------
+		void initData();
 
 
-		Widget( const Widget & ) = delete;					//! Purposely deleted
-		Widget & operator=(const Widget & ) = delete;		//! Purposely deleted
-
-	private slots:
-		void slotSelectDir();
-		void slotSegmentData();
-
+		View3D( const View3D & ) = delete;					//! Purposely deleted
+		View3D & operator=(const View3D & ) = delete;		//! Purposely deleted
+		
 	private:
-		Ui::Widget m_ui;
-
-
-
+		vtkSmartPointer<vtkRenderer> m_renderer;
+	
 };
-

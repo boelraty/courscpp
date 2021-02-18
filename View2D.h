@@ -1,53 +1,52 @@
 #pragma once
 
 
-/*---- QT Includes ----*/
-#include <QGridLayout>
-#include <QLCDNumber>
-#include <QPushButton>
-#include <QSlider>
-#include <QWidget>
+/*---- VTK Includes ----*/
+#include <vtkImageViewer.h>
+#include <vtkRenderer.h>
+#include <vtkSmartPointer.h>
 
-#include "ui_Widget.h"
 
-//Forward declaration
-class View2D;
-class View3D;
+#include "ui_View2D.h"
 
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\class	Widget
-*	\brief	Widget used for the glenoid fitting validation
+/*!	\class	View2D
+*	\brief	View2D
 *
 *	\note	Copy constructor and assignment operator are purposely not implemented.
 *	
-*	\file	Widget.h
+*	\file	View2D.h
 *///-----------------------------------------------------------------------------------------------------------------
-class Widget : public QWidget
+class View2D : public QWidget
 {
 	Q_OBJECT
 	public:
 		//-------------------------------------------------------------------------------------------------------------------
 		/*!	\brief	Constructor	
 		*///-----------------------------------------------------------------------------------------------------------------
-		Widget(QWidget * p_parent = NULL);
+		View2D(QWidget * p_parent = NULL);
 
 		//-------------------------------------------------------------------------------------------------------------------
-		/*!	\brief	Virtual destructor	
+		/*!	\brief	Destructor	
 		*///-----------------------------------------------------------------------------------------------------------------
-		~Widget();
+		~View2D();
+
+		//-------------------------------------------------------------------------------------------------------------------
+		/*!	\brief	Init data
+		*///-----------------------------------------------------------------------------------------------------------------
+		void initData();
 
 
-		Widget( const Widget & ) = delete;					//! Purposely deleted
-		Widget & operator=(const Widget & ) = delete;		//! Purposely deleted
-
-	private slots:
-		void slotSelectDir();
-		void slotSegmentData();
+		View2D( const View2D & ) = delete;					//! Purposely deleted
+		View2D & operator=(const View2D & ) = delete;		//! Purposely deleted
+		
+	public slots:
+		void slotUpdateSlice(const int p_value);
 
 	private:
-		Ui::Widget m_ui;
+		vtkSmartPointer<vtkRenderer> m_renderer;
+		vtkSmartPointer<vtkImageViewer> m_viewer;
+		Ui::View2D m_ui;
 
-
-
+		
 };
-

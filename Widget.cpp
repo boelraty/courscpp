@@ -5,44 +5,62 @@
 
 #include "Widget.h"
 
-/*---- VTK Includes ----*/
-#include <vtkSphereSource.h>
-#include <vtkPolyDataMapper.h>
-#include <vtkActor.h>
-#include <vtkRenderWindow.h>
+/*---- Internal Includes ----*/
+#include "ApplicationData.h"
+#include "View2D.h"
+#include "View3D.h"
+
+/*---- QT Includes ----*/
+#include <QFileDialog>
+#include <QHBoxLayout>
 
 //-----------------------------------------------------------------------------------------------------------------
-Widget::Widget(QWidget * p_parent) : QVTKWidget(p_parent), m_renderer(vtkSmartPointer<vtkRenderer>::New())
+Widget::Widget(QWidget * p_parent) : QWidget(p_parent)
 //-----------------------------------------------------------------------------------------------------------------
 {
-	//Create data : a sphere
-	vtkSmartPointer<vtkSphereSource> sphere = vtkSmartPointer<vtkSphereSource>::New();
-	sphere->SetCenter(0, 0, 0);
-	sphere->SetRadius(100);
-	sphere->Update();
-
-	//Create mapper
-	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
-	mapper->SetInputData(sphere->GetOutput());
-
-	//Create actor
-	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
-	actor->SetMapper(mapper);
-
-	//Add renderer
-	this->GetRenderWindow()->AddRenderer(m_renderer);
-
-	//Add actor to renderer
-	m_renderer->AddActor(actor);
-
-	//Render
-	//m_renderer->Render();
+	m_ui.setupUi(this);
 	
+	//Hide view
+
+	//Connect signals and slots for Load button
 }
 
 //-----------------------------------------------------------------------------------------------------------------
 Widget::~Widget()
 //-----------------------------------------------------------------------------------------------------------------
 {
-	//Not necessary to delete children widget, Qt will do it automatically
+}
+
+
+//-----------------------------------------------------------------------------------------------------------------
+void Widget::slotSelectDir()
+//-----------------------------------------------------------------------------------------------------------------
+{
+	const QString dirPath = QFileDialog::getExistingDirectory(this, "Select a directory", "");
+
+
+	if(dirPath != "")
+	{
+		//Load directory
+		ApplicationData::getInstance()->loadDirectory(dirPath);
+
+		//Connect signals and slots for Segment button
+
+		//m_ui.view2D->initData();
+
+		//Show view2D and view3D
+		//m_ui.view2D->show();
+		//m_ui.view3D->show();
+	}
+}
+
+//-----------------------------------------------------------------------------------------------------------------
+void Widget::slotSegmentData()
+//-----------------------------------------------------------------------------------------------------------------
+{
+	//Disconnect segment button
+
+	//Segment data
+
+	//Init view3D
 }

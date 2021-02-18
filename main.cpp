@@ -1,32 +1,33 @@
 //-------------------------------------------------------------------------------------------------------------------
-/*!	\brief	Exemple3
+/*!	\brief	Application used to validate the Glenoid fitting process
 *	\file	main.cpp
+*	\author	Imascap
 *///-----------------------------------------------------------------------------------------------------------------
 
 /*---- Internal Includes ----*/
+#include "ApplicationData.h"
 #include "Widget.h"
 
 /*---- QT Includes ----*/
-#include <QDebug>
 #include <QApplication>
-#include <qwidget.h>
-#include <qpushbutton.h>
 
+
+//-----------------------------------------------------------------------------------------------------------------
 int main(int p_argc, char* p_argv[])
+//-----------------------------------------------------------------------------------------------------------------
 {
-	//Create the QApplication to manage the GUI
+	vtkObject::GlobalWarningDisplayOff();
 	QApplication app(p_argc, p_argv);
 
-	//Create our own widget
+	//Create main widget
 	Widget widget;
-	widget.move(100, 0);
-	widget.setFixedSize(300, 300);
+	widget.showMaximized();
 
-	widget.show();
-
-	//Start application / start the events loop
-	//The GUI is not displayed if the exec() method is not called
+	//Launch events loop
 	app.exec();
 
+	//Kill data
+	ApplicationData::getInstance()->kill();
+
 	return 0;
-}
+} 
