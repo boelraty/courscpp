@@ -1,11 +1,11 @@
 #ifndef Widget_H
 #define Widget_H
 
-/*---- QT Includes ----*/
-#include <QPushButton>
-#include <QSlider>
-#include <QWidget>
 
+/*---- VTK Includes ----*/
+#include <QVTKWidget.h>
+#include <vtkSmartPointer.h>
+#include <vtkRenderer.h>
 
 //-------------------------------------------------------------------------------------------------------------------
 /*!	\class	Widget
@@ -15,9 +15,8 @@
 *	
 *	\file	Widget.h
 *///-----------------------------------------------------------------------------------------------------------------
-class Widget : public QWidget
+class Widget : public QVTKWidget
 {
-	Q_OBJECT
 	public:
 		//-------------------------------------------------------------------------------------------------------------------
 		/*!	\brief	Constructor	
@@ -28,25 +27,9 @@ class Widget : public QWidget
 		/*!	\brief	Destructor	
 		*///-----------------------------------------------------------------------------------------------------------------
 		~Widget();
-
-	private slots :
-		//-------------------------------------------------------------------------------------------------------------------
-		/*!	\brief	Slot to be connected with the click on the button
-		*///-----------------------------------------------------------------------------------------------------------------
-		void slotButtonClicked();
-
-
-		//-------------------------------------------------------------------------------------------------------------------
-		/*!	\brief	Slot to be connected with the slider
-		*///-----------------------------------------------------------------------------------------------------------------
-		void slotSliderMoved(int p_newValue);
-
-	//Signals could be declared here
-	//signals :
-
+		
 	private:
-		QPushButton * m_button;
-		QSlider * m_slider;
+		vtkSmartPointer<vtkRenderer> m_renderer;
 
 		Widget( const Widget & );					//! Purposely not implemented
 		Widget & operator=(const Widget & );		//! Purposely not implemented

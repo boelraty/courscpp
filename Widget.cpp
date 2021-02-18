@@ -5,30 +5,39 @@
 
 #include "Widget.h"
 
-/*---- QT Includes ----*/
-#include <QDebug>
+/*---- VTK Includes ----*/
+#include <vtkSphereSource.h>
+#include <vtkPolyDataMapper.h>
+#include <vtkActor.h>
+#include <vtkRenderWindow.h>
 
 //-----------------------------------------------------------------------------------------------------------------
-//Initialization list => used to initialize all class members
-Widget::Widget(QWidget * p_parent) : QWidget(p_parent), m_button(NULL), m_slider(NULL)
+Widget::Widget(QWidget * p_parent) : QVTKWidget(p_parent), m_renderer(vtkSmartPointer<vtkRenderer>::New())
 //-----------------------------------------------------------------------------------------------------------------
 {
-	//Create button inside current widget
-	m_button = new QPushButton("Button", this);
-	m_button->move(100, 100);
-	m_button->show();
+	//Create data : a sphere
+	vtkSmartPointer<vtkSphereSource> sphere = vtkSmartPointer<vtkSphereSource>::New();
+	sphere->SetCenter(0, 0, 0);
+	sphere->SetRadius(100);
+	sphere->Update();
 
-	//Create slider inside current widget
-	m_slider = new QSlider(this);
-	m_slider->setOrientation(Qt::Horizontal);
-	m_slider->setRange(0, 200);
-	m_slider->move(200, 100);
-	m_slider->show();
+	//Create mapper
+	vtkSmartPointer<vtkPolyDataMapper> mapper = vtkSmartPointer<vtkPolyDataMapper>::New();
+	mapper->SetInputData(sphere->GetOutput());
 
-	//Connect signals to slots
-	connect(m_button, SIGNAL(clicked()), this, SLOT(slotButtonClicked()));
-	connect(m_slider, SIGNAL(valueChanged(int)), this, SLOT(slotSliderMoved(int)));
+	//Create actor
+	vtkSmartPointer<vtkActor> actor = vtkSmartPointer<vtkActor>::New();
+	actor->SetMapper(mapper);
 
+	//Add renderer
+	this->GetRenderWindow()->AddRenderer(m_renderer);
+
+	//Add actor to renderer
+	m_renderer->AddActor(actor);
+
+	//Render
+	//m_renderer->Render();
+	
 }
 
 //-----------------------------------------------------------------------------------------------------------------
@@ -36,19 +45,4 @@ Widget::~Widget()
 //-----------------------------------------------------------------------------------------------------------------
 {
 	//Not necessary to delete children widget, Qt will do it automatically
-}
-
-//-----------------------------------------------------------------------------------------------------------------
-void Widget::slotButtonClicked()
-//-----------------------------------------------------------------------------------------------------------------
-{
-	qDebug() << "Button clicked";
-}
-
-
-//-----------------------------------------------------------------------------------------------------------------
-void Widget::slotSliderMoved(int p_newValue)
-//-----------------------------------------------------------------------------------------------------------------
-{
-	qDebug() << p_newValue;
 }
