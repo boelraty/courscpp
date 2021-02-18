@@ -42,7 +42,7 @@ void ApplicationData::loadDirectory(const QString & p_dirPath)
 //-----------------------------------------------------------------------------------------------------------------
 {
     //Save path
-	m_path = p_dirPath;
+	m_dirPath = p_dirPath;
 
 	//List files in a directory
 	QDir dir(p_dirPath);
